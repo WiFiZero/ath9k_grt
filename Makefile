@@ -1,5 +1,7 @@
 obj-$(CONFIG_ATH9K_HW)		+= ath9k/
 
+obj-m		+= grt_redirect/
+
 obj-$(CONFIG_ATH_COMMON)	+= ath.o
 
 ath-objs :=	main.o \
