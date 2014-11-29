@@ -17,11 +17,12 @@
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
 #include <linux/nl80211.h>
-#include <linux/pci.h>
-#include <linux/pci-aspm.h>
+//#include <linux/pci.h>
+//#include <linux/pci-aspm.h>
 #include <linux/ath9k_platform.h>
 #include <linux/module.h>
 #include "ath9k.h"
+#include "../grt_redirect/grt_redirect.h"
 
 static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
 	{ PCI_VDEVICE(ATHEROS, 0x0023) }, /* PCI   */
@@ -668,7 +669,7 @@ static void ath_pci_read_cachesize(struct ath_common *common, int *csz)
 	struct ath_softc *sc = (struct ath_softc *) common->priv;
 	u8 u8tmp;
 
-	pci_read_config_byte(to_pci_dev(sc->dev), PCI_CACHE_LINE_SIZE, &u8tmp);
+	_pci_read_config_byte(to_pci_dev(sc->dev), PCI_CACHE_LINE_SIZE, &u8tmp);
 	*csz = (int)u8tmp;
 
 	/*
@@ -734,14 +735,14 @@ static void ath_pci_aspm_init(struct ath_common *common)
 	if ((ath9k_hw_get_btcoex_scheme(ah) != ATH_BTCOEX_CFG_NONE) &&
 	    (AR_SREV_9285(ah))) {
 		/* Bluetooth coexistence requires disabling ASPM. */
-		pcie_capability_clear_word(pdev, PCI_EXP_LNKCTL,
+		_pcie_capability_clear_word(pdev, PCI_EXP_LNKCTL,
 			PCI_EXP_LNKCTL_ASPM_L0S | PCI_EXP_LNKCTL_ASPM_L1);
 
 		/*
 		 * Both upstream and downstream PCIe components should
 		 * have the same ASPM settings.
 		 */
-		pcie_capability_clear_word(parent, PCI_EXP_LNKCTL,
+		_pcie_capability_clear_word(parent, PCI_EXP_LNKCTL,
 			PCI_EXP_LNKCTL_ASPM_L0S | PCI_EXP_LNKCTL_ASPM_L1);
 
 		ath_info(common, "Disabling ASPM since BTCOEX is enabled\n");
@@ -762,9 +763,9 @@ static void ath_pci_aspm_init(struct ath_common *common)
 	 * 110/111 : 64 us
 	 */
 	if (AR_SREV_9462(ah))
-		pci_read_config_dword(pdev, 0x70c, &ah->config.aspm_l1_fix);
+		_pci_read_config_dword(pdev, 0x70c, &ah->config.aspm_l1_fix);
 
-	pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &aspm);
+	_pcie_capability_read_word(parent, PCI_EXP_LNKCTL, &aspm);
 	if (aspm & (PCI_EXP_LNKCTL_ASPM_L0S | PCI_EXP_LNKCTL_ASPM_L1)) {
 		ah->aspm_enabled = true;
 		/* Initialize PCIe PM and SERDES registers. */
@@ -789,16 +790,16 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	int ret = 0;
 	char hw_name[64];
 
-	if (pcim_enable_device(pdev))
+	if (_pcim_enable_device(pdev))
 		return -EIO;
 
-	ret =  pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+	ret =  _pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (ret) {
 		pr_err("32-bit DMA not available\n");
 		return ret;
 	}
 
-	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+	ret = _pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
 	if (ret) {
 		pr_err("32-bit DMA consistent DMA enable failed\n");
 		return ret;
@@ -808,7 +809,7 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	 * Cache line size is used to size and align various
 	 * structures used to communicate with the hardware.
 	 */
-	pci_read_config_byte(pdev, PCI_CACHE_LINE_SIZE, &csz);
+	_pci_read_config_byte(pdev, PCI_CACHE_LINE_SIZE, &csz);
 	if (csz == 0) {
 		/*
 		 * Linux 2.4.18 (at least) writes the cache line size
@@ -818,26 +819,26 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 		 * comes up zero.
 		 */
 		csz = L1_CACHE_BYTES / sizeof(u32);
-		pci_write_config_byte(pdev, PCI_CACHE_LINE_SIZE, csz);
+		_pci_write_config_byte(pdev, PCI_CACHE_LINE_SIZE, csz);
 	}
 	/*
 	 * The default setting of latency timer yields poor results,
 	 * set it to the value used by other systems. It may be worth
 	 * tweaking this setting more.
 	 */
-	pci_write_config_byte(pdev, PCI_LATENCY_TIMER, 0xa8);
+	_pci_write_config_byte(pdev, PCI_LATENCY_TIMER, 0xa8);
 
-	pci_set_master(pdev);
+	_pci_set_master(pdev);
 
 	/*
 	 * Disable the RETRY_TIMEOUT register (0x41) to keep
 	 * PCI Tx retries from interfering with C3 CPU state.
 	 */
-	pci_read_config_dword(pdev, 0x40, &val);
+	_pci_read_config_dword(pdev, 0x40, &val);
 	if ((val & 0x0000ff00) != 0)
-		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
+		_pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
 
-	ret = pcim_iomap_regions(pdev, BIT(0), "ath9k");
+	ret = _pcim_iomap_regions(pdev, BIT(0), "ath9k");
 	if (ret) {
 		dev_err(&pdev->dev, "PCI memory region reserve error\n");
 		return -ENODEV;
@@ -850,12 +851,12 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 	}
 
 	SET_IEEE80211_DEV(hw, &pdev->dev);
-	pci_set_drvdata(pdev, hw);
+	_pci_set_drvdata(pdev, hw);
 
 	sc = hw->priv;
 	sc->hw = hw;
 	sc->dev = &pdev->dev;
-	sc->mem = pcim_iomap_table(pdev)[0];
+	sc->mem = _pcim_iomap_table(pdev)[0];
 	sc->driver_data = id->driver_data;
 
 	ret = request_irq(pdev->irq, ath_isr, IRQF_SHARED, "ath9k", sc);
@@ -887,7 +888,7 @@ err_irq:
 
 static void ath_pci_remove(struct pci_dev *pdev)
 {
-	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+	struct ieee80211_hw *hw = _pci_get_drvdata(pdev);
 	struct ath_softc *sc = hw->priv;
 
 	if (!is_ath9k_unloaded)
@@ -902,7 +903,7 @@ static void ath_pci_remove(struct pci_dev *pdev)
 static int ath_pci_suspend(struct device *device)
 {
 	struct pci_dev *pdev = to_pci_dev(device);
-	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+	struct ieee80211_hw *hw = _pci_get_drvdata(pdev);
 	struct ath_softc *sc = hw->priv;
 
 	if (sc->wow_enabled)
@@ -923,7 +924,7 @@ static int ath_pci_suspend(struct device *device)
 static int ath_pci_resume(struct device *device)
 {
 	struct pci_dev *pdev = to_pci_dev(device);
-	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+	struct ieee80211_hw *hw = _pci_get_drvdata(pdev);
 	struct ath_softc *sc = hw->priv;
 	struct ath_hw *ah = sc->sc_ah;
 	struct ath_common *common = ath9k_hw_common(ah);
@@ -934,9 +935,9 @@ static int ath_pci_resume(struct device *device)
 	 * re-disable the RETRY_TIMEOUT register (0x41) to keep
 	 * PCI Tx retries from interfering with C3 CPU state
 	 */
-	pci_read_config_dword(pdev, 0x40, &val);
+	_pci_read_config_dword(pdev, 0x40, &val);
 	if ((val & 0x0000ff00) != 0)
-		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
+		_pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
 
 	ath_pci_aspm_init(common);
 	ah->reset_power_on = false;
@@ -967,10 +968,10 @@ static struct pci_driver ath_pci_driver = {
 
 int ath_pci_init(void)
 {
-	return pci_register_driver(&ath_pci_driver);
+	return _pci_register_driver(&ath_pci_driver);
 }
 
 void ath_pci_exit(void)
 {
-	pci_unregister_driver(&ath_pci_driver);
+	_pci_unregister_driver(&ath_pci_driver);
 }
