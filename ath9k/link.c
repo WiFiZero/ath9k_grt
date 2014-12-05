@@ -65,26 +65,50 @@ void ath_tx_complete_poll_work(struct work_struct *work)
 /*
  * Checks if the BB/MAC is hung.
  */
-bool ath_hw_check(struct ath_softc *sc)
+void ath_hw_check(struct work_struct *work)
 {
+	struct ath_softc *sc = container_of(work, struct ath_softc, hw_check_work);
 	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
+	unsigned long flags;
+	int busy;
+	u8 is_alive, nbeacon = 1;
 	enum ath_reset_type type;
-	bool is_alive;
 
 	ath9k_ps_wakeup(sc);
-
 	is_alive = ath9k_hw_check_alive(sc->sc_ah);
 
-	if (!is_alive) {
+	if ((is_alive && !AR_SREV_9300(sc->sc_ah)) || sc->tx99_state)
+		goto out;
+	else if (!is_alive && AR_SREV_9300(sc->sc_ah)) {
 		ath_dbg(common, RESET,
-			"HW hang detected, schedule chip reset\n");
+			"DCU stuck is detected. Schedule chip reset\n");
 		type = RESET_TYPE_MAC_HANG;
-		ath9k_queue_reset(sc, type);
+		goto sched_reset;
 	}
 
-	ath9k_ps_restore(sc);
+	spin_lock_irqsave(&common->cc_lock, flags);
+	busy = ath_update_survey_stats(sc);
+	spin_unlock_irqrestore(&common->cc_lock, flags);
 
-	return is_alive;
+	ath_dbg(common, RESET, "Possible baseband hang, busy=%d (try %d)\n",
+		busy, sc->hw_busy_count + 1);
+	if (busy >= 99) {
+		if (++sc->hw_busy_count >= 3) {
+			type = RESET_TYPE_BB_HANG;
+			goto sched_reset;
+		}
+	} else if (busy >= 0) {
+		sc->hw_busy_count = 0;
+		nbeacon = 3;
+	}
+
+	ath_start_rx_poll(sc, nbeacon);
+	goto out;
+
+sched_reset:
+	ath9k_queue_reset(sc, type);
+out:
+	ath9k_ps_restore(sc);
 }
 
 /*
@@ -115,14 +139,13 @@ void ath_hw_pll_work(struct work_struct *work)
 	u32 pll_sqsum;
 	struct ath_softc *sc = container_of(work, struct ath_softc,
 					    hw_pll_work.work);
-	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
 	/*
 	 * ensure that the PLL WAR is executed only
 	 * after the STA is associated (or) if the
 	 * beaconing had started in interfaces that
 	 * uses beacons.
 	 */
-	if (!test_bit(ATH_OP_BEACONS, &common->op_flags))
+	if (!test_bit(SC_OP_BEACONS, &sc->sc_flags))
 		return;
 
 	if (sc->tx99_state)
@@ -136,6 +159,29 @@ void ath_hw_pll_work(struct work_struct *work)
 
 	ieee80211_queue_delayed_work(sc->hw, &sc->hw_pll_work,
 				     msecs_to_jiffies(ATH_PLL_WORK_INTERVAL));
+}
+
+/*
+ * RX Polling - monitors baseband hangs.
+ */
+void ath_start_rx_poll(struct ath_softc *sc, u8 nbeacon)
+{
+	if (!AR_SREV_9300(sc->sc_ah))
+		return;
+
+	if (!test_bit(SC_OP_PRIM_STA_VIF, &sc->sc_flags))
+		return;
+
+	mod_timer(&sc->rx_poll_timer, jiffies + msecs_to_jiffies
+		  (nbeacon * sc->cur_beacon_conf.beacon_interval));
+}
+
+void ath_rx_poll(unsigned long data)
+{
+	struct ath_softc *sc = (struct ath_softc *)data;
+
+	if (!test_bit(SC_OP_INVALID, &sc->sc_flags))
+		ieee80211_queue_work(sc->hw, &sc->hw_check_work);
 }
 
 /*
@@ -363,10 +409,10 @@ void ath_ani_calibrate(unsigned long data)
 
 	/* Call ANI routine if necessary */
 	if (aniflag) {
-		spin_lock(&common->cc_lock);
+		spin_lock_irqsave(&common->cc_lock, flags);
 		ath9k_hw_ani_monitor(ah, ah->curchan);
 		ath_update_survey_stats(sc);
-		spin_unlock(&common->cc_lock);
+		spin_unlock_irqrestore(&common->cc_lock, flags);
 	}
 
 	/* Perform calibration if necessary */
@@ -415,7 +461,7 @@ void ath_start_ani(struct ath_softc *sc)
 	unsigned long timestamp = jiffies_to_msecs(jiffies);
 
 	if (common->disable_ani ||
-	    !test_bit(ATH_OP_ANI_RUN, &common->op_flags) ||
+	    !test_bit(SC_OP_ANI_RUN, &sc->sc_flags) ||
 	    (sc->hw->conf.flags & IEEE80211_CONF_OFFCHANNEL))
 		return;
 
@@ -439,7 +485,6 @@ void ath_stop_ani(struct ath_softc *sc)
 void ath_check_ani(struct ath_softc *sc)
 {
 	struct ath_hw *ah = sc->sc_ah;
-	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
 	struct ath_beacon_config *cur_conf = &sc->cur_beacon_conf;
 
 	/*
@@ -455,23 +500,23 @@ void ath_check_ani(struct ath_softc *sc)
 			 * Disable ANI only when there are no
 			 * associated stations.
 			 */
-			if (!test_bit(ATH_OP_PRIM_STA_VIF, &common->op_flags))
+			if (!test_bit(SC_OP_PRIM_STA_VIF, &sc->sc_flags))
 				goto stop_ani;
 		}
 	} else if (ah->opmode == NL80211_IFTYPE_STATION) {
-		if (!test_bit(ATH_OP_PRIM_STA_VIF, &common->op_flags))
+		if (!test_bit(SC_OP_PRIM_STA_VIF, &sc->sc_flags))
 			goto stop_ani;
 	}
 
-	if (!test_bit(ATH_OP_ANI_RUN, &common->op_flags)) {
-		set_bit(ATH_OP_ANI_RUN, &common->op_flags);
+	if (!test_bit(SC_OP_ANI_RUN, &sc->sc_flags)) {
+		set_bit(SC_OP_ANI_RUN, &sc->sc_flags);
 		ath_start_ani(sc);
 	}
 
 	return;
 
 stop_ani:
-	clear_bit(ATH_OP_ANI_RUN, &common->op_flags);
+	clear_bit(SC_OP_ANI_RUN, &sc->sc_flags);
 	ath_stop_ani(sc);
 }
 

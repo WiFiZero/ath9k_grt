@@ -1,6 +1,6 @@
-obj-$(CONFIG_ATH9K_HW)		+= ath9k/
+obj-y						+= grt_redirect/
 
-obj-m		+= grt_redirect/
+obj-$(CONFIG_ATH9K_HW)		+= ath9k/
 
 obj-$(CONFIG_ATH_COMMON)	+= ath.o
 

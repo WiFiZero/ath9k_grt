@@ -18,6 +18,7 @@ int _pci_read_config_byte(const struct pci_dev *dev, int where, u8 *val){
 EXPORT_SYMBOL(_pci_read_config_byte);
 
 static int _pci_write_config_byte(const struct pci_dev *dev, int where, u8 val){
+	printk("a write op was performed!\n");
 	return pci_write_config_byte(   dev,  where,  val);
 }
 EXPORT_SYMBOL(_pci_write_config_byte);
