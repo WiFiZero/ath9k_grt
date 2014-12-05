@@ -1,2 +1,0 @@
-/home/jackie/Documents/ath//ath9k/ath9k_htc.ko
-/home/jackie/Documents/ath//ath9k/htc_hst.o /home/jackie/Documents/ath//ath9k/hif_usb.o /home/jackie/Documents/ath//ath9k/wmi.o /home/jackie/Documents/ath//ath9k/htc_drv_txrx.o /home/jackie/Documents/ath//ath9k/htc_drv_main.o /home/jackie/Documents/ath//ath9k/htc_drv_beacon.o /home/jackie/Documents/ath//ath9k/htc_drv_init.o /home/jackie/Documents/ath//ath9k/htc_drv_gpio.o /home/jackie/Documents/ath//ath9k/htc_drv_debug.o
