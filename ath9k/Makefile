@@ -1,3 +1,5 @@
+#CONFIG_ATH9K_DEBUGFS = m
+
 ath9k-y +=	beacon.o \
 		gpio.o \
 		init.o \

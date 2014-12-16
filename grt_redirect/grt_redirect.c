@@ -88,10 +88,43 @@ void *_pci_get_drvdata(struct pci_dev *pdev){
 }
 EXPORT_SYMBOL(_pci_get_drvdata);
 
+void __iomem * pci_base_address;
+
 void __iomem * const *_pcim_iomap_table(struct pci_dev *pdev){
-	return pcim_iomap_table(  pdev);
+	void __iomem * const * result =  pcim_iomap_table(  pdev);
+	pci_base_address = result[0];
+	return result;
 }
 EXPORT_SYMBOL(_pcim_iomap_table);
+
+unsigned dma_desp_addr[10];
+
+void _iowrite32(u32 val, void __iomem *addr){
+	//printk("ATH9K_GRT: iowrite32(%p:%ud)\n",addr, val);
+	unsigned long uladdr = (unsigned long)(addr-pci_base_address);
+	if((uladdr&0xff00) == 0x0800){
+		unsigned q = (unsigned)(uladdr&0xff)>>2;
+		if(q<10){
+			dma_desp_addr[q] = val;
+			printk("%x\n", DMA_BIT_MASK(32));
+			printk("ATH9K_GRT: dma descriptor catched: addr=%x q=%x\n",dma_desp_addr[q], q);
+		}
+	}
+	if((uladdr&0xffff) == 0x0880){
+		int q =  __builtin_ctz(uladdr);
+		printk("ATH9K_GRT: q=%x val=%x\n",q, val);
+	}
+	//printk("ATH9K_GRT: %x\n",uladdr);
+	return iowrite32(val, addr);
+}
+EXPORT_SYMBOL(_iowrite32);
+
+unsigned int _ioread32(void __iomem *addr){
+	unsigned int result = ioread32(addr);
+	//printk("ATH9K_GRT: ioread32(%p:%ud)\n",addr, result);
+	return result;
+}
+EXPORT_SYMBOL(_ioread32);
 
 
 int init_module(void)

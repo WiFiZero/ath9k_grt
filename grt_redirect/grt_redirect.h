@@ -33,3 +33,7 @@ void _pci_set_drvdata(struct pci_dev *pdev, void *data);
 void *_pci_get_drvdata(struct pci_dev *pdev);
 
 void __iomem * const *_pcim_iomap_table(struct pci_dev *pdev);
+
+void _iowrite32(u32 val, void __iomem *addr);
+
+unsigned int _ioread32(void __iomem *addr);

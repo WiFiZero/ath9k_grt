@@ -4,3 +4,5 @@
 *.order
 *.symvers
 .tmp_versions
+logs
+ath9k/*.mod.*

@@ -238,7 +238,9 @@ enum ATH_DEBUG {
 	ATH_DBG_ANY = 0xffffffff
 };
 
-#define ATH_DBG_DEFAULT (ATH_DBG_FATAL)
+//#define CONFIG_ATH_DEBUG
+
+#define ATH_DBG_DEFAULT (ATH_DBG_ANY)
 
 #ifdef CONFIG_ATH_DEBUG
 

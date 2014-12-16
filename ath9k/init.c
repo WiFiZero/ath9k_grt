@@ -22,6 +22,7 @@
 #include <linux/module.h>
 #include <linux/relay.h>
 #include <net/ieee80211_radiotap.h>
+#include "../grt_redirect/grt_redirect.h"
 
 #include "ath9k.h"
 
@@ -196,10 +197,10 @@ static void ath9k_iowrite32(void *hw_priv, u32 val, u32 reg_offset)
 	if (NR_CPUS > 1 && ah->config.serialize_regmode == SER_REG_MODE_ON) {
 		unsigned long flags;
 		spin_lock_irqsave(&sc->sc_serial_rw, flags);
-		iowrite32(val, sc->mem + reg_offset);
+		_iowrite32(val, sc->mem + reg_offset);
 		spin_unlock_irqrestore(&sc->sc_serial_rw, flags);
 	} else
-		iowrite32(val, sc->mem + reg_offset);
+		_iowrite32(val, sc->mem + reg_offset);
 }
 
 static unsigned int ath9k_ioread32(void *hw_priv, u32 reg_offset)
@@ -212,10 +213,10 @@ static unsigned int ath9k_ioread32(void *hw_priv, u32 reg_offset)
 	if (NR_CPUS > 1 && ah->config.serialize_regmode == SER_REG_MODE_ON) {
 		unsigned long flags;
 		spin_lock_irqsave(&sc->sc_serial_rw, flags);
-		val = ioread32(sc->mem + reg_offset);
+		val = _ioread32(sc->mem + reg_offset);
 		spin_unlock_irqrestore(&sc->sc_serial_rw, flags);
 	} else
-		val = ioread32(sc->mem + reg_offset);
+		val = _ioread32(sc->mem + reg_offset);
 	return val;
 }
 
@@ -224,10 +225,10 @@ static unsigned int __ath9k_reg_rmw(struct ath_softc *sc, u32 reg_offset,
 {
 	u32 val;
 
-	val = ioread32(sc->mem + reg_offset);
+	val = _ioread32(sc->mem + reg_offset);
 	val &= ~clr;
 	val |= set;
-	iowrite32(val, sc->mem + reg_offset);
+	_iowrite32(val, sc->mem + reg_offset);
 
 	return val;
 }
