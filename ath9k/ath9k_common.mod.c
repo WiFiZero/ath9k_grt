@@ -30,4 +30,4 @@ __attribute__((section(".modinfo"))) =
 "depends=ath,ath9k_hw";
 
 
-MODULE_INFO(srcversion, "DE02C8D83F55BA470A485BF");
+MODULE_INFO(srcversion, "696B00A6C59713EC0966997");

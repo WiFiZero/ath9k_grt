@@ -354,7 +354,7 @@
 #define AR_DMADBG_6           0x00f8
 #define AR_DMADBG_7           0x00fc
 
-#define AR_NUM_QCU      2
+#define AR_NUM_QCU      10
 #define AR_QCU_0        0x0001
 #define AR_QCU_1        0x0002
 #define AR_QCU_2        0x0004
