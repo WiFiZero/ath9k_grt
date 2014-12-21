@@ -46,4 +46,4 @@ __attribute__((section(".modinfo"))) =
 "depends=ath";
 
 
-MODULE_INFO(srcversion, "D953A01BC10A4BB15D723B2");
+MODULE_INFO(srcversion, "C16D8BA164FF7F04DA6D475");

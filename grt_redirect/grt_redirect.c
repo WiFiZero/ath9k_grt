@@ -100,7 +100,7 @@ EXPORT_SYMBOL(_pcim_iomap_table);
 unsigned dma_desp_addr[10];
 
 void _iowrite32(u32 val, void __iomem *addr){
-	//printk("ATH9K_GRT: iowrite32(%p:%ud)\n",addr, val);
+	//printk("ATH9K_GRT: iowrite32(%p:%x)\n",addr, val);
 	unsigned long uladdr = (unsigned long)(addr-pci_base_address);
 	if((uladdr&0xff00) == 0x0800){
 		unsigned q = (unsigned)(uladdr&0xff)>>2;
@@ -121,7 +121,17 @@ EXPORT_SYMBOL(_iowrite32);
 
 unsigned int _ioread32(void __iomem *addr){
 	unsigned int result = ioread32(addr);
-	//printk("ATH9K_GRT: ioread32(%p:%ud)\n",addr, result);
+	int i;
+//	for(i = 0; i<(sizeof(register_map)/sizeof(register_map[0])); i++){
+//		if(register_map[i][0]== (u64)(addr-pci_base_address)){
+//			printk("ATH9K_GRT: ioreadstatic32(%x:%x)\n",register_map[i][0], result);
+//			if (register_map[i][1] != result){
+//				printk("ATH9K_GRT: ioreaderror32(%x:%x)\n",register_map[i][0], register_map[i][1]);
+//			}
+//			return (unsigned int) register_map[i][1];
+//		}
+//	}
+	//printk("ATH9K_GRT: ioread32(%p:%x)\n",addr-pci_base_address, result);
 	return result;
 }
 EXPORT_SYMBOL(_ioread32);

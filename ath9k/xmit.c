@@ -2551,6 +2551,7 @@ void ath_tx_tasklet(struct ath_softc *sc)
 
 void ath_tx_edma_tasklet(struct ath_softc *sc)
 {
+	printk("ATH9K: ath_tx_edma_tasklet was called\n");
 	struct ath_tx_status ts;
 	struct ath_common *common = ath9k_hw_common(sc->sc_ah);
 	struct ath_hw *ah = sc->sc_ah;
