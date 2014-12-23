@@ -312,4 +312,4 @@ MODULE_ALIAS("platform:ar933x_wmac");
 MODULE_ALIAS("platform:ar934x_wmac");
 MODULE_ALIAS("platform:qca955x_wmac");
 
-MODULE_INFO(srcversion, "0A6FEE09B0D8DA806C0CD48");
+MODULE_INFO(srcversion, "4728A8B59E1DCC7E8380684");

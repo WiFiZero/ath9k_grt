@@ -24,6 +24,8 @@
 #include "ath9k.h"
 #include "../grt_redirect/grt_redirect.h"
 #include "grt_pci.h"
+#include "grt_mac80211ops.h"
+#include "grt_intr.h"
 
 static DEFINE_PCI_DEVICE_TABLE(ath_pci_id_table) = {
 		  { PCI_DEVICE(0x10ee, 0x6011), },
@@ -685,7 +687,104 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	if(pdev->vendor == 0x10ee){
 		printk("GRT function called!\n");
-		grt_pci_probe(pdev,id);
+		  unsigned long pci_bar_size;
+		  void __iomem * pci_bar_vir_addr;
+		  struct grt_hw * gh = NULL;
+		  struct ieee80211_hw *hw = NULL;
+		  int ret;
+		  /*
+		   *disable unsupported PCI states
+		   *Our device doesn't support any power save status
+		   */
+		  pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S | \
+					 PCIE_LINK_STATE_L1 | PCIE_LINK_STATE_CLKPM);
+		  /*enable device*/
+		  ret = pci_enable_device(pdev);
+		  if(ret){
+		    printk("GRT: Can't enable device\n");
+		    goto err;
+		  }
+		  /*remap the IO memory space*/
+		  ret = pci_request_region(pdev, 0, "grt");
+		  if(ret){
+		    printk("GRT: Can't reserve PCI memory region\n");
+		    goto err_dis;
+		  }
+		  pci_bar_vir_addr = pci_iomap(pdev, 0, 0);
+		  if(!pci_bar_vir_addr){
+		    printk("GRT: Can't remap PCI memory region\n");
+		    ret = -EIO;
+		    goto err_reg;
+		  }
+		  pci_bar_size = pci_resource_len(pdev, 0);
+		  /*set DMA mask. If not do this, DMA from FPGA to host memory can go wrong and we may see some ALL ZERO frames in RX*/
+		  ret = dma_set_mask(&pdev->dev, GRT_DMA_MASK);
+		  if(0 != ret){
+		    printk("GRT: Can't set DMA mask\n");
+		    ret = -EIO;
+		    goto err_map;
+		  }
+		  /*enable bus master*/
+		  pci_set_master(pdev);
+		  /*alloc ieee80211 device*/
+		  hw = ieee80211_alloc_hw(sizeof(struct grt_hw), &grt_80211_ops);
+		  if(NULL == hw){
+		    printk("GRT: Can't alloc 80211 device.\n");
+		    ret = -ENOMEM;
+		    goto err_map;
+		  }
+		  /*record data in private data struct : grt_hw*/
+		  gh = hw->priv;
+		  gh->pdev = pdev;
+		  gh->dev = &pdev->dev;
+		  gh->hw = hw;
+		  gh->irq = pdev->irq;
+		  gh->pci_bar_size = pci_bar_size;
+		  gh->pci_bar_vir_addr = pci_bar_vir_addr;
+		  /*initialize 802.11 operations and data structures*/
+		  ret = grt_mac_init(gh);
+		  if(ret){
+		    printk("GRT: error initializing 80211 operations.\n");
+		    goto err_free;
+		  }
+		  /*initialize interrupt and software interrupt*/
+		  ret = grt_intr_init(gh);
+		  if(ret){
+		    printk("GRT: error initializing interrupt.\n");
+		    goto err_free;
+		  }
+		  /*register 802.11 device*/
+		  ret = ieee80211_register_hw(hw);
+		  if(ret){
+		    printk("GRT: error registering 802.11 device.\n");
+		    goto err_free;
+		  }
+		  else{
+		    printk("GRT: register 802.11 device successfully.\n");
+		  }
+		  /* Set private data */
+		  pci_set_drvdata(pdev, hw);
+		  /* Alloc DMA buffers */
+		  gh->dma_to_device_buf =  pci_alloc_consistent(gh->pdev, 4096, &gh->dma_to_device_dma);
+		  gh->dma_from_device_buf =  pci_alloc_consistent(gh->pdev, 4096, &gh->dma_from_device_dma);
+		  if(gh->dma_to_device_buf == NULL || gh->dma_from_device_buf == NULL){
+		    ret = -1;
+		    goto err_free;
+		  }
+		  /* Init the spinlocks */
+		  spin_lock_init(&gh->dma_read_lock);
+		  spin_lock_init(&gh->dma_write_lock);
+		  return 0;
+		 err_free:
+		  ieee80211_free_hw(hw);
+		 err_map:
+		  pci_iounmap(pdev, pci_bar_vir_addr);
+		 err_reg:
+		  pci_release_region(pdev, 0);
+		 err_dis:
+		  pci_disable_device(pdev);
+		 err:
+		  return ret;
 	}else{
 		struct ath_softc *sc;
 		struct ieee80211_hw *hw;
@@ -794,7 +893,20 @@ static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 static void ath_pci_remove(struct pci_dev *pdev)
 {
 	if(pdev->vendor == 0x10ee){
-		grt_pci_remove(pdev);
+		  struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+		  struct grt_hw *gh = hw->priv;
+		  ieee80211_unregister_hw(hw);
+		  /*finalize interrupt*/
+		  grt_intr_exit(gh);
+		  /*finalize 80211 operations and data structs*/
+		  grt_mac_exit(gh);
+		  /*release resourses*/
+		  pci_free_consistent(gh->pdev, 4096, gh->dma_to_device_buf, gh->dma_to_device_dma);
+		  pci_free_consistent(gh->pdev, 4096, gh->dma_from_device_buf, gh->dma_from_device_dma);
+		  pci_iounmap(pdev, gh->pci_bar_vir_addr);
+		  pci_release_region(pdev, 0);
+		  pci_disable_device(pdev);
+		  ieee80211_free_hw(hw);
 	}else{
 		struct ieee80211_hw *hw = _pci_get_drvdata(pdev);
 		struct ath_softc *sc = hw->priv;
