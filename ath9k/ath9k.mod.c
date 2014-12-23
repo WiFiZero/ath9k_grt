@@ -23,6 +23,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xece59bc4, __VMLINUX_SYMBOL_STR(ieee80211_csa_finish) },
 	{ 0xb52af3cd, __VMLINUX_SYMBOL_STR(ath9k_hw_init) },
 	{ 0x2f7c36b3, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
+	{ 0x70778d8f, __VMLINUX_SYMBOL_STR(pci_bus_read_config_byte) },
 	{ 0x3ce5801b, __VMLINUX_SYMBOL_STR(_pcim_iomap_table) },
 	{ 0xd2b09ce5, __VMLINUX_SYMBOL_STR(__kmalloc) },
 	{ 0x68ac809d, __VMLINUX_SYMBOL_STR(ath9k_cmn_get_channel) },
@@ -30,6 +31,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x619cb7dd, __VMLINUX_SYMBOL_STR(simple_read_from_buffer) },
 	{ 0x8f132be4, __VMLINUX_SYMBOL_STR(devm_ioremap_nocache) },
 	{ 0x5fb7d225, __VMLINUX_SYMBOL_STR(ath9k_hw_cfg_output) },
+	{ 0x52b6baa5, __VMLINUX_SYMBOL_STR(pci_release_region) },
 	{ 0xda3e43d1, __VMLINUX_SYMBOL_STR(_raw_spin_unlock) },
 	{ 0x9e7745b0, __VMLINUX_SYMBOL_STR(debugfs_create_dir) },
 	{ 0xd6ee688f, __VMLINUX_SYMBOL_STR(vmalloc) },
@@ -52,12 +54,15 @@ __attribute__((section("__versions"))) = {
 	{ 0xe9c3d12e, __VMLINUX_SYMBOL_STR(ath9k_hw_numtxpending) },
 	{ 0x32c4bce7, __VMLINUX_SYMBOL_STR(ar9003_paprd_setup_gain_table) },
 	{ 0x68222be4, __VMLINUX_SYMBOL_STR(ath9k_hw_btcoex_enable) },
+	{ 0x79aa04a2, __VMLINUX_SYMBOL_STR(get_random_bytes) },
+	{ 0x3616ceb8, __VMLINUX_SYMBOL_STR(dma_set_mask) },
 	{ 0xed94600a, __VMLINUX_SYMBOL_STR(ath9k_hw_wait) },
 	{ 0x6236571c, __VMLINUX_SYMBOL_STR(ath9k_hw_set_interrupts) },
 	{ 0xbdc494ee, __VMLINUX_SYMBOL_STR(ath9k_cmn_get_hw_crypto_keytype) },
 	{ 0xa4f66064, __VMLINUX_SYMBOL_STR(ath9k_hw_stopdmarecv) },
 	{ 0x5fca12bf, __VMLINUX_SYMBOL_STR(_pci_write_config_dword) },
 	{ 0x8c838049, __VMLINUX_SYMBOL_STR(_iowrite32) },
+	{ 0xbe62c3bb, __VMLINUX_SYMBOL_STR(pci_disable_device) },
 	{ 0xe9c175d9, __VMLINUX_SYMBOL_STR(ath9k_hw_btcoex_init_mci) },
 	{ 0xc15c8611, __VMLINUX_SYMBOL_STR(cfg80211_chandef_create) },
 	{ 0x3f7806ea, __VMLINUX_SYMBOL_STR(ar9003_paprd_enable) },
@@ -77,6 +82,8 @@ __attribute__((section("__versions"))) = {
 	{ 0xeed5d6f7, __VMLINUX_SYMBOL_STR(ath9k_hw_gettxbuf) },
 	{ 0xbb36e33, __VMLINUX_SYMBOL_STR(dfs_pattern_detector_init) },
 	{ 0xada49ccf, __VMLINUX_SYMBOL_STR(ieee80211_unregister_hw) },
+	{ 0xa1425906, __VMLINUX_SYMBOL_STR(ieee80211_channel_to_frequency) },
+	{ 0x25dab3f3, __VMLINUX_SYMBOL_STR(x86_dma_fallback_dev) },
 	{ 0xb7ef4536, __VMLINUX_SYMBOL_STR(rate_control_send_low) },
 	{ 0x593a99b, __VMLINUX_SYMBOL_STR(init_timer_key) },
 	{ 0x797c8fa9, __VMLINUX_SYMBOL_STR(cancel_delayed_work_sync) },
@@ -101,6 +108,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x5ea6996d, __VMLINUX_SYMBOL_STR(skb_trim) },
 	{ 0x6b1c85fb, __VMLINUX_SYMBOL_STR(ieee80211_stop_queues) },
 	{ 0xcd11b759, __VMLINUX_SYMBOL_STR(_pcie_capability_clear_word) },
+	{ 0x3669d163, __VMLINUX_SYMBOL_STR(__netdev_alloc_skb) },
 	{ 0x391cd8af, __VMLINUX_SYMBOL_STR(ieee80211_stop_queue) },
 	{ 0xb7827051, __VMLINUX_SYMBOL_STR(ieee80211_tx_status) },
 	{ 0xa79860e6, __VMLINUX_SYMBOL_STR(ath_printk) },
@@ -110,6 +118,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xbc7e1f73, __VMLINUX_SYMBOL_STR(debugfs_create_u32) },
 	{ 0x4bce7a33, __VMLINUX_SYMBOL_STR(ath9k_hw_setopmode) },
 	{ 0x6d0aba34, __VMLINUX_SYMBOL_STR(wait_for_completion) },
+	{ 0xae074132, __VMLINUX_SYMBOL_STR(pci_set_master) },
 	{ 0x7ba6f396, __VMLINUX_SYMBOL_STR(ath9k_hw_disable) },
 	{ 0xd5f2172f, __VMLINUX_SYMBOL_STR(del_timer_sync) },
 	{ 0x3c80c06c, __VMLINUX_SYMBOL_STR(kstrtoull) },
@@ -121,6 +130,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xfb578fc5, __VMLINUX_SYMBOL_STR(memset) },
 	{ 0x23944829, __VMLINUX_SYMBOL_STR(_pci_set_drvdata) },
 	{ 0x4740fda4, __VMLINUX_SYMBOL_STR(default_llseek) },
+	{ 0x7a38991d, __VMLINUX_SYMBOL_STR(pci_iounmap) },
 	{ 0x509f70c7, __VMLINUX_SYMBOL_STR(dev_err) },
 	{ 0x8f64aa4, __VMLINUX_SYMBOL_STR(_raw_spin_unlock_irqrestore) },
 	{ 0xb9cd8958, __VMLINUX_SYMBOL_STR(ath9k_hw_btcoex_init_2wire) },
@@ -178,6 +188,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x309c0e1b, __VMLINUX_SYMBOL_STR(_dev_info) },
 	{ 0x77f62b28, __VMLINUX_SYMBOL_STR(ath9k_hw_name) },
 	{ 0x78764f4e, __VMLINUX_SYMBOL_STR(pv_irq_ops) },
+	{ 0x9ffceb28, __VMLINUX_SYMBOL_STR(pci_disable_link_state) },
 	{ 0x50ec8914, __VMLINUX_SYMBOL_STR(ath9k_hw_abortpcurecv) },
 	{ 0xe056082a, __VMLINUX_SYMBOL_STR(ath9k_hw_init_global_settings) },
 	{ 0xf5a8b5b3, __VMLINUX_SYMBOL_STR(__alloc_skb) },
@@ -223,6 +234,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x7a03fb89, __VMLINUX_SYMBOL_STR(ieee80211_rate_control_unregister) },
 	{ 0xcd13b66b, __VMLINUX_SYMBOL_STR(ath9k_hw_setpower) },
 	{ 0x9c5e6334, __VMLINUX_SYMBOL_STR(ieee80211_sta_eosp) },
+	{ 0x4f68e5c9, __VMLINUX_SYMBOL_STR(do_gettimeofday) },
 	{ 0x84bc73c, __VMLINUX_SYMBOL_STR(__ieee80211_create_tpt_led_trigger) },
 	{ 0x3dd0962, __VMLINUX_SYMBOL_STR(led_classdev_unregister) },
 	{ 0xfc5abd1d, __VMLINUX_SYMBOL_STR(ieee80211_register_hw) },
@@ -254,11 +266,14 @@ __attribute__((section("__versions"))) = {
 	{ 0xb0e602eb, __VMLINUX_SYMBOL_STR(memmove) },
 	{ 0x345c64e, __VMLINUX_SYMBOL_STR(ath_gen_timer_alloc) },
 	{ 0x565aa423, __VMLINUX_SYMBOL_STR(ath9k_hw_btcoex_init_3wire) },
+	{ 0xb524cf31, __VMLINUX_SYMBOL_STR(pci_iomap) },
 	{ 0xcc7bc244, __VMLINUX_SYMBOL_STR(consume_skb) },
 	{ 0x857dde58, __VMLINUX_SYMBOL_STR(platform_driver_unregister) },
 	{ 0x44335ef3, __VMLINUX_SYMBOL_STR(ath_key_config) },
 	{ 0x3f880403, __VMLINUX_SYMBOL_STR(ath9k_hw_enable_interrupts) },
+	{ 0x436c2179, __VMLINUX_SYMBOL_STR(iowrite32) },
 	{ 0xa6a439f2, __VMLINUX_SYMBOL_STR(skb_put) },
+	{ 0x1d4aa0c0, __VMLINUX_SYMBOL_STR(pci_enable_device) },
 	{ 0xc1f81642, __VMLINUX_SYMBOL_STR(devm_kmalloc) },
 	{ 0x53f6ffbc, __VMLINUX_SYMBOL_STR(wait_for_completion_timeout) },
 	{ 0xd3ef8e26, __VMLINUX_SYMBOL_STR(ath9k_hw_intrpend) },
@@ -268,8 +283,10 @@ __attribute__((section("__versions"))) = {
 	{ 0x6ab776fd, __VMLINUX_SYMBOL_STR(ath9k_hw_reset_calvalid) },
 	{ 0x5907da33, __VMLINUX_SYMBOL_STR(dev_get_drvdata) },
 	{ 0x1b6773d7, __VMLINUX_SYMBOL_STR(release_firmware) },
+	{ 0xa9e348ab, __VMLINUX_SYMBOL_STR(pci_request_region) },
 	{ 0x6c2ec4b8, __VMLINUX_SYMBOL_STR(ieee80211_start_tx_ba_cb_irqsafe) },
 	{ 0xf5741fff, __VMLINUX_SYMBOL_STR(dma_ops) },
+	{ 0xe484e35f, __VMLINUX_SYMBOL_STR(ioread32) },
 	{ 0x4835b291, __VMLINUX_SYMBOL_STR(device_set_wakeup_enable) },
 	{ 0xf20dabd8, __VMLINUX_SYMBOL_STR(free_irq) },
 	{ 0x1e6fbb2d, __VMLINUX_SYMBOL_STR(dmam_alloc_coherent) },
@@ -283,119 +300,16 @@ __used
 __attribute__((section(".modinfo"))) =
 "depends=ath9k_hw,mac80211,grt_redirect,ath9k_common,cfg80211,ath";
 
-MODULE_ALIAS("pci:v0000168Cd00000023sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000024sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000027sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000029sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv00001A3Bsd00001C71bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv0000105Bsd0000E01Fbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv000011ADsd00006632bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv000011ADsd00006642bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv00001A32sd00000306bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv0000185Fsd0000309Dbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv000010CFsd0000147Cbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv000010CFsd0000147Dbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Asv000010CFsd00001536bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Bsv00001A3Bsd00002C37bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Bsv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Csv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Dsv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd0000002Esv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000030sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00002086bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00001237bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00002126bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd0000126Abc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00002152bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000105Bsd0000E075bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000168Csd00003119bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000168Csd00003122bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000185Fsd00003119bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000185Fsd00003027bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Dsd00004105bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Dsd00004106bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Dsd0000410Dbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Dsd0000410Ebc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Dsd0000410Fbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Dsd0000C706bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Dsd0000C680bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Dsd0000C708bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv000017AAsd00003218bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv000017AAsd00003219bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00002C97bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00002100bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001C56sd00004001bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv000011ADsd00006627bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv000011ADsd00006628bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000105Bsd0000E04Ebc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000105Bsd0000E04Fbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv0000144Fsd00007197bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001B9Asd00002000bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001B9Asd00002001bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00001186bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00001F86bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00001195bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001A3Bsd00001F95bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001B9Asd00001C00bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001B9Asd00001C01bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv00001043sd0000850Dbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000032sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000033sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv00001A3Bsd00002116bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv000011ADsd00006661bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv0000168Csd00003117bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv000017AAsd00003214bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv00001969sd00000091bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv00001A3Bsd00002110bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv00001043sd0000850Ebc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv000011ADsd00006631bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv000011ADsd00006641bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv0000103Csd00001864bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv000014CDsd00000063bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv000014CDsd00000064bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv000010CFsd00001783bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000034sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000037sv*sd*bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000168Csd00003028bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv00001A3Bsd00002176bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000105Bsd0000E068bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000185Fsd0000A119bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000011ADsd00000632bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000011ADsd00006671bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv00001B9Asd00002811bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv00001B9Asd00002812bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000168Csd00003025bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000168Csd00003026bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000168Csd0000302Bbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000105Bsd0000E069bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000185Fsd00003028bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000011ADsd00000622bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000011ADsd00000672bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000011ADsd00000662bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv00001A3Bsd0000213Abc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000017AAsd00003026bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000103Csd000018E3bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000103Csd0000217Fbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv00001028sd0000020Ebc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000144Dsd0000411Abc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000144Dsd0000411Bbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000144Dsd0000411Cbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000144Dsd0000411Dbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000144Dsd0000411Ebc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000168Csd00003027bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000168Csd0000302Cbc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000011ADsd00000642bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000011ADsd00000652bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv000011ADsd00000612bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv00001A3Bsd00002130bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000144Fsd00007202bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv00001B9Asd00002810bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv0000185Fsd00003027bc*sc*i*");
-MODULE_ALIAS("pci:v0000168Cd00000036sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010EEd00006011sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010EEd00006022sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010EEd00006024sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010EEd00007011sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010EEd00007022sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010EEd00007024sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010EEd00007028sv*sd*bc*sc*i*");
 MODULE_ALIAS("platform:ath9k");
 MODULE_ALIAS("platform:ar933x_wmac");
 MODULE_ALIAS("platform:ar934x_wmac");
 MODULE_ALIAS("platform:qca955x_wmac");
 
-MODULE_INFO(srcversion, "EB25739F6DF79DD75DFC79D");
+MODULE_INFO(srcversion, "0A6FEE09B0D8DA806C0CD48");
