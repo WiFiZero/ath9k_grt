@@ -37,6 +37,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xd6ee688f, __VMLINUX_SYMBOL_STR(vmalloc) },
 	{ 0x1975aa1a, __VMLINUX_SYMBOL_STR(ar9003_mci_send_wlan_channels) },
 	{ 0xca62a858, __VMLINUX_SYMBOL_STR(_pci_set_master) },
+	{ 0x1e5f41a1, __VMLINUX_SYMBOL_STR(pcim_enable_device) },
 	{ 0x63bf7b77, __VMLINUX_SYMBOL_STR(debugfs_create_u8) },
 	{ 0xc2de7b1b, __VMLINUX_SYMBOL_STR(_ioread32) },
 	{ 0xc9218acf, __VMLINUX_SYMBOL_STR(_pcie_capability_read_word) },
@@ -49,6 +50,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xed403bb5, __VMLINUX_SYMBOL_STR(ieee80211_queue_work) },
 	{ 0x1c8c9783, __VMLINUX_SYMBOL_STR(dev_set_drvdata) },
 	{ 0x579ee14f, __VMLINUX_SYMBOL_STR(led_classdev_register) },
+	{ 0xb0d94c01, __VMLINUX_SYMBOL_STR(pcim_iomap_table) },
 	{ 0x12cc135e, __VMLINUX_SYMBOL_STR(relay_file_operations) },
 	{ 0x176b46c8, __VMLINUX_SYMBOL_STR(ieee80211_csa_is_complete) },
 	{ 0xe9c3d12e, __VMLINUX_SYMBOL_STR(ath9k_hw_numtxpending) },
@@ -153,6 +155,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xca492021, __VMLINUX_SYMBOL_STR(debugfs_remove) },
 	{ 0x4e2481d5, __VMLINUX_SYMBOL_STR(ath_is_world_regd) },
 	{ 0x16305289, __VMLINUX_SYMBOL_STR(warn_slowpath_null) },
+	{ 0xbdf4c9b3, __VMLINUX_SYMBOL_STR(pci_bus_write_config_dword) },
 	{ 0x82783356, __VMLINUX_SYMBOL_STR(ieee80211_rx) },
 	{ 0x98dd1db1, __VMLINUX_SYMBOL_STR(skb_push) },
 	{ 0xc09b4964, __VMLINUX_SYMBOL_STR(mutex_lock) },
@@ -174,6 +177,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x5c77406c, __VMLINUX_SYMBOL_STR(ath9k_hw_write_associd) },
 	{ 0x9cf94504, __VMLINUX_SYMBOL_STR(ieee80211_queue_delayed_work) },
 	{ 0x2e12f5e5, __VMLINUX_SYMBOL_STR(dev_kfree_skb_any) },
+	{ 0xa896fcca, __VMLINUX_SYMBOL_STR(pcim_iomap_regions) },
 	{ 0xe523ad75, __VMLINUX_SYMBOL_STR(synchronize_irq) },
 	{ 0x627eaab3, __VMLINUX_SYMBOL_STR(ath_reg_notifier_apply) },
 	{ 0xd28aa2ed, __VMLINUX_SYMBOL_STR(ath9k_hw_puttxbuf) },
@@ -194,6 +198,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xf5a8b5b3, __VMLINUX_SYMBOL_STR(__alloc_skb) },
 	{ 0xd2981357, __VMLINUX_SYMBOL_STR(ath9k_cmn_count_streams) },
 	{ 0x12a38747, __VMLINUX_SYMBOL_STR(usleep_range) },
+	{ 0x78bc02d7, __VMLINUX_SYMBOL_STR(pci_bus_read_config_dword) },
 	{ 0x2174b794, __VMLINUX_SYMBOL_STR(ath9k_hw_settsf64) },
 	{ 0xba63339c, __VMLINUX_SYMBOL_STR(_raw_spin_unlock_bh) },
 	{ 0xf0fdf6cb, __VMLINUX_SYMBOL_STR(__stack_chk_fail) },
@@ -236,6 +241,7 @@ __attribute__((section("__versions"))) = {
 	{ 0x9c5e6334, __VMLINUX_SYMBOL_STR(ieee80211_sta_eosp) },
 	{ 0x4f68e5c9, __VMLINUX_SYMBOL_STR(do_gettimeofday) },
 	{ 0x84bc73c, __VMLINUX_SYMBOL_STR(__ieee80211_create_tpt_led_trigger) },
+	{ 0xd5673c5a, __VMLINUX_SYMBOL_STR(pci_bus_write_config_byte) },
 	{ 0x3dd0962, __VMLINUX_SYMBOL_STR(led_classdev_unregister) },
 	{ 0xfc5abd1d, __VMLINUX_SYMBOL_STR(ieee80211_register_hw) },
 	{ 0xe7af73c5, __VMLINUX_SYMBOL_STR(_pci_read_config_dword) },
@@ -248,6 +254,7 @@ __attribute__((section("__versions"))) = {
 	{ 0xe5495276, __VMLINUX_SYMBOL_STR(ieee80211_alloc_hw) },
 	{ 0xa351a7e9, __VMLINUX_SYMBOL_STR(ath9k_hw_check_nav) },
 	{ 0xe33cb5bf, __VMLINUX_SYMBOL_STR(ath9k_hw_putrxbuf) },
+	{ 0xd8eb900a, __VMLINUX_SYMBOL_STR(dma_supported) },
 	{ 0x152b0819, __VMLINUX_SYMBOL_STR(_pci_read_config_byte) },
 	{ 0x80e2d100, __VMLINUX_SYMBOL_STR(ath_rxbuf_alloc) },
 	{ 0x73b6fa0d, __VMLINUX_SYMBOL_STR(_pci_set_dma_mask) },
@@ -312,4 +319,4 @@ MODULE_ALIAS("platform:ar933x_wmac");
 MODULE_ALIAS("platform:ar934x_wmac");
 MODULE_ALIAS("platform:qca955x_wmac");
 
-MODULE_INFO(srcversion, "4728A8B59E1DCC7E8380684");
+MODULE_INFO(srcversion, "7BF7E05A52939581E1B0F22");

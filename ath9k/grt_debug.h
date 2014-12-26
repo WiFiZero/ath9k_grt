@@ -5,7 +5,7 @@
 #include <net/mac80211.h>
 #include "grt.h"
 
-// #define GRT_DEBUG
+ #define GRT_DEBUG
 // #define GRT_INFO
 
 #ifdef GRT_DEBUG

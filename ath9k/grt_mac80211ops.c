@@ -61,7 +61,7 @@ int grt_mac_init(struct grt_hw * gh)
       printk("GRT: grt_mac_init alloc grt_buf error.\n");
       return -1;
     }
-    bf->grt_descs = pci_alloc_consistent(gh->pdev, 32, &bf->daddr);
+    bf->grt_descs = dmam_alloc_coherent(gh->dev, 32, &bf->daddr, GFP_KERNEL);
     if(unlikely(NULL == bf->grt_descs)){
       printk("GRT: grt_mac_init alloc txbuf error.\n");
       return -1;

@@ -686,54 +686,99 @@ static const struct ath_bus_ops ath_pci_bus_ops = {
 static int ath_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
 {
 	if(pdev->vendor == 0x10ee){
+		unsigned long pci_bar_size;
+		void __iomem * pci_bar_vir_addr;
+		struct grt_hw * gh = NULL;
 		printk("GRT function called!\n");
-		  unsigned long pci_bar_size;
-		  void __iomem * pci_bar_vir_addr;
-		  struct grt_hw * gh = NULL;
-		  struct ieee80211_hw *hw = NULL;
-		  int ret;
+		struct ath_softc *sc;
+		struct ieee80211_hw *hw;
+		u8 csz;
+		u32 val;
+		char hw_name[64];
+		  int ret=0;
 		  /*
+		   * GRTOnly
 		   *disable unsupported PCI states
 		   *Our device doesn't support any power save status
 		   */
 		  pci_disable_link_state(pdev, PCIE_LINK_STATE_L0S | \
 					 PCIE_LINK_STATE_L1 | PCIE_LINK_STATE_CLKPM);
-		  /*enable device*/
-		  ret = pci_enable_device(pdev);
-		  if(ret){
-		    printk("GRT: Can't enable device\n");
-		    goto err;
-		  }
-		  /*remap the IO memory space*/
-		  ret = pci_request_region(pdev, 0, "grt");
-		  if(ret){
-		    printk("GRT: Can't reserve PCI memory region\n");
-		    goto err_dis;
-		  }
-		  pci_bar_vir_addr = pci_iomap(pdev, 0, 0);
-		  if(!pci_bar_vir_addr){
-		    printk("GRT: Can't remap PCI memory region\n");
-		    ret = -EIO;
-		    goto err_reg;
-		  }
+		  /**/
+		  if (pcim_enable_device(pdev))
+		  		return -EIO;
+		  //<GRT Only>: GRT uses 48bit DMA space
+		  	ret =  pci_set_dma_mask(pdev, DMA_BIT_MASK(48));
+		  	if (ret) {
+		  		pr_err("32-bit DMA not available\n");
+		  		return ret;
+		  	}
+
+		  	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(48));
+		  	if (ret) {
+		  		pr_err("32-bit DMA consistent DMA enable failed\n");
+		  		return ret;
+		  	}
+		  	//</GRT Only>: GRT uses 48bit DMA space
+		  	/*
+		  	 * Cache line size is used to size and align various
+		  	 * structures used to communicate with the hardware.
+		  	 */
+		  	pci_read_config_byte(pdev, PCI_CACHE_LINE_SIZE, &csz);
+		  	if (csz == 0) {
+		  		/*
+		  		 * Linux 2.4.18 (at least) writes the cache line size
+		  		 * register as a 16-bit wide register which is wrong.
+		  		 * We must have this setup properly for rx buffer
+		  		 * DMA to work so force a reasonable value here if it
+		  		 * comes up zero.
+		  		 */
+		  		csz = L1_CACHE_BYTES / sizeof(u32);
+		  		pci_write_config_byte(pdev, PCI_CACHE_LINE_SIZE, csz);
+		  	}
+		  	/*
+		  	 * The default setting of latency timer yields poor results,
+		  	 * set it to the value used by other systems. It may be worth
+		  	 * tweaking this setting more.
+		  	 */
+		  	pci_write_config_byte(pdev, PCI_LATENCY_TIMER, 0xa8);
+
+		  	pci_set_master(pdev);
+
+		  	/*
+		  	 * Disable the RETRY_TIMEOUT register (0x41) to keep
+		  	 * PCI Tx retries from interfering with C3 CPU state.
+		  	 */
+		  	pci_read_config_dword(pdev, 0x40, &val);
+		  	if ((val & 0x0000ff00) != 0)
+		  		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
+			ret = pcim_iomap_regions(pdev, BIT(0), "ath9k");
+			if (ret) {
+				dev_err(&pdev->dev, "PCI memory region reserve error\n");
+				return -ENODEV;
+			}
+			hw = ieee80211_alloc_hw(sizeof(struct grt_hw), &grt_80211_ops);
+			if (!hw) {
+				dev_err(&pdev->dev, "No memory for ieee80211_hw\n");
+				return -ENOMEM;
+			}
+
+			SET_IEEE80211_DEV(hw, &pdev->dev);
+			pci_set_drvdata(pdev, hw);
+
+			sc = hw->priv;
+			sc->hw = hw;
+			sc->dev = &pdev->dev;
+			sc->mem = pcim_iomap_table(pdev)[0];
+			sc->driver_data = id->driver_data;
+			set_bit(SC_OP_INVALID, &sc->sc_flags);
+			//<GRTOnly>:fill gh
+		  pci_bar_vir_addr = pcim_iomap_table(pdev)[0];
 		  pci_bar_size = pci_resource_len(pdev, 0);
-		  /*set DMA mask. If not do this, DMA from FPGA to host memory can go wrong and we may see some ALL ZERO frames in RX*/
-		  ret = dma_set_mask(&pdev->dev, GRT_DMA_MASK);
-		  if(0 != ret){
-		    printk("GRT: Can't set DMA mask\n");
-		    ret = -EIO;
-		    goto err_map;
-		  }
-		  /*enable bus master*/
-		  pci_set_master(pdev);
-		  /*alloc ieee80211 device*/
-		  hw = ieee80211_alloc_hw(sizeof(struct grt_hw), &grt_80211_ops);
 		  if(NULL == hw){
 		    printk("GRT: Can't alloc 80211 device.\n");
 		    ret = -ENOMEM;
 		    goto err_map;
 		  }
-		  /*record data in private data struct : grt_hw*/
 		  gh = hw->priv;
 		  gh->pdev = pdev;
 		  gh->dev = &pdev->dev;
